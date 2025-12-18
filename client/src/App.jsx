@@ -6,6 +6,7 @@ import Listing from "./pages/Listing";
 import Footer from "./components/Footer";
 import Blog from "./pages/Blog";
 import Contact from "./pages/Contact";
+import FeaturedProperties from "./components/FeaturedProperties";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/listing" element={<Listing />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/featured-properties" element={<FeaturedProperties />} />
       </Routes>
 
       <Footer />
