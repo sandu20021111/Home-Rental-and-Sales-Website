@@ -42,15 +42,15 @@ const FeaturedProperties = () => {
         breakpoints={{
           600:{
             slidesPerView:2,
-            spaceBetween:30,
+            spaceBetween:30
           },
            1124:{
             slidesPerView:3,
-            spaceBetween:30,
+            spaceBetween:30
           },
            1300:{
             slidesPerView:4,
-            spaceBetween:30,
+            spaceBetween:30
           }
 
         }}
