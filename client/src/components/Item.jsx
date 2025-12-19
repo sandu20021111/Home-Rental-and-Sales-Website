@@ -21,7 +21,7 @@ export const Item = ({property}) => {
         </div>
       </div>
       <h4 className='h4 line-clamp-1'>{property.title}</h4>
-      <div className="flex gap-2 py-2">
+      <div className="flexCenter gap-4 py-2">
         <p className='flexCenter gap-x-2 border-r border-slate-900/50 pr-4 font-[500]'>
           <img src={assets.bed} alt="facilitiesIcon" width={21}/>
           {property.facilities.bedrooms}
@@ -42,6 +42,7 @@ export const Item = ({property}) => {
           {property.area}
         </p>
       </div>
+        <p className="pt-2 mb-4 line-clamp-2">{property.description}</p>
     </div>
     </Link>
   )
