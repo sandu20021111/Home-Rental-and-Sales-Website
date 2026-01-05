@@ -31,7 +31,7 @@ const PropertyDetails = () => {
                         <div className='flex justify-between flex-col sm:flex-row sm:items-end mt-3'>
                             <h3 className='h3'>{property.title}</h3>
                             <div className='bold-18'>
-                                ${property.price.sale}| ${property.price.rent}.00/night
+                                Rs.{property.price.sale}| Rs.{property.price.rent}.00/night
                             </div>
                         </div>
                         <div className='flex justify-between items-start my-1'>
