@@ -55,7 +55,7 @@ const priceRange = [
         {priceRange.map( (price)=> (
           <label key={price} className="flex gap-2 medium-14">
             <input type="checkbox" />
-            ${price}
+            Rs.{price}
           </label>
         ))}
        </div>
