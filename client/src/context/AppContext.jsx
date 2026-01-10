@@ -1,30 +1,32 @@
-import React, {createContext, useContext, useEffect, useState} from 'react'
-import { useNavigate } from 'react-router-dom'
-import { dummyProperties } from '../assets/data'
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { dummyProperties } from "../assets/data";
+import { Currency } from "lucide-react";
+import { useUser } from "@clerk/clerk-react";
 
-const AppContext = createContext()
+const AppContext = createContext();
 
-export const AppContextProvider = ({children}) => {
+export const AppContextProvider = ({ children }) => {
+  const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "Rs.";
+  const navigate = useNavigate();
+  const [properties, setProperties] = useState([]);
+  const { user } = useUser();
 
-const navigate = useNavigate()
-const [properties, setProperties] = useState([])
-const getProperties = ()=>{
-  setProperties(dummyProperties)
-}
+  const getProperties = () => {
+    setProperties(dummyProperties);
+  };
 
-useEffect(()=>{
-  getProperties()
-}, [])
-  
-    const value ={
-      navigate, properties
+  useEffect(() => {
+    getProperties();
+  }, []);
 
-    }
-    return (
-    <AppContext.Provider value={value}>
-      {children}
-    </AppContext.Provider>
-  )
-}
+  const value = {
+    navigate,
+    properties,
+    currency,
+    user,
+  };
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+};
 
-export const useAppContext = () => useContext(AppContext)
+export const useAppContext = () => useContext(AppContext);

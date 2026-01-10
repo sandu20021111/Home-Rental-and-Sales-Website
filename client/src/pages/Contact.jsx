@@ -3,9 +3,8 @@ import { User, Mail } from "lucide-react";
 
 const Contact = () => {
   return (
-    <section className="bg-[#FFFBEF] py-16">
+    <section className="bg-[#FFFBEF] py-16 pt-28">
       <div className="max-w-sm mx-auto px-4 text-center">
-
         {/* Badge (moved down) */}
         <div className="flex justify-center mt-8 mb-6">
           <span className="bg-black text-white text-xs px-4 py-1.5 rounded-full">
@@ -28,12 +27,9 @@ const Contact = () => {
 
         {/* Form */}
         <form className="space-y-5 text-left">
-
           {/* Full Name */}
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Full Name
-            </label>
+            <label className="block text-sm font-medium mb-1">Full Name</label>
             <div className="flex items-center gap-3 bg-[#FFF6D8] border border-[#CBD5E1] rounded-full px-4 py-2.5">
               <User size={16} className="text-gray-500" />
               <input
@@ -61,9 +57,7 @@ const Contact = () => {
 
           {/* Message */}
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Message
-            </label>
+            <label className="block text-sm font-medium mb-1">Message</label>
             <textarea
               rows="4"
               placeholder="Enter your message"
@@ -78,7 +72,6 @@ const Contact = () => {
           >
             Submit Form →
           </button>
-
         </form>
       </div>
     </section>
