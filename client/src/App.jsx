@@ -11,17 +11,18 @@ import PropertyDetails from "./pages/PropertyDetails";
 import MyBookings from "./pages/MyBookings";
 import AgencyReg from "./components/AgencyReg";
 import { useAppContext } from "./context/AppContext";
+import Sidebar from "./components/owner/Sidebar";
+import Dashboard from "./pages/owner/Dashboard";
+import AddProperty from "./pages/owner/AddProperty";
+import ListProperty from "./pages/owner/ListProperty";
 
 const App = () => {
-
-  const {showAgencyReg} = useAppContext()
-
-
+  const { showAgencyReg } = useAppContext();
 
   return (
     <main>
       <Header />
-          {showAgencyReg && <AgencyReg/>}
+      {showAgencyReg && <AgencyReg />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/listing" element={<Listing />} />
@@ -30,6 +31,11 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/my-bookings" element={<MyBookings />} />
         <Route path="/featured-properties" element={<FeaturedProperties />} />
+        <Route path="/owner" element={<Sidebar />}>
+          <Route index element={<Dashboard />} />
+          <Route path="/owner/add-property" element={<AddProperty />} />
+          <Route path="/owner/list-property" element={<ListProperty />} />
+        </Route>
       </Routes>
 
       <Footer />
