@@ -9,8 +9,10 @@ const AppContext = createContext();
 export const AppContextProvider = ({ children }) => {
   const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "Rs.";
   const navigate = useNavigate();
-  const [properties, setProperties] = useState([]);
   const { user } = useUser();
+  const [properties, setProperties] = useState([]);
+  const [showAgencyReg,setshowAgencyReg] = useState(false)
+ 
 
   const getProperties = () => {
     setProperties(dummyProperties);
@@ -25,7 +27,9 @@ export const AppContextProvider = ({ children }) => {
     properties,
     currency,
     user,
-  };
+    showAgencyReg,
+    setshowAgencyReg
+};
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 

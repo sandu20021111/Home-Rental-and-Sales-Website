@@ -9,12 +9,19 @@ import Contact from "./pages/Contact";
 import FeaturedProperties from "./components/FeaturedProperties";
 import PropertyDetails from "./pages/PropertyDetails";
 import MyBookings from "./pages/MyBookings";
+import AgencyReg from "./components/AgencyReg";
+import { useAppContext } from "./context/AppContext";
 
 const App = () => {
+
+  const {showAgencyReg} = useAppContext()
+
+
+
   return (
     <main>
       <Header />
-
+          {showAgencyReg && <AgencyReg/>}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/listing" element={<Listing />} />
