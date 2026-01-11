@@ -97,19 +97,15 @@ const Header = () => {
 
             {/* Auth Section */}
             {user ? (
-              <div className="flex items-center gap-2">
-                {/* My Bookings button */}
-                <button
-                  onClick={() => navigate("/my-bookings")}
-                  className="btn-secondary flexCenter gap-2 rounded-full"
-                >
-                  <BookingIcon />
-                  My Bookings
-                </button>
-
-                {/* User menu */}
-                <UserButton afterSignOutUrl="/" />
-              </div>
+              <UserButton afterSignOutUrl="/">
+                <UserButton.MenuItems>
+                  <UserButton.Action
+                    label="My Bookings"
+                    labelIcon={<BookingIcon />}
+                    onClick={() => navigate("/my-bookings")}
+                  />
+                </UserButton.MenuItems>
+              </UserButton>
             ) : (
               <button
                 onClick={openSignIn}
