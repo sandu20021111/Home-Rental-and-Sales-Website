@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import Listing from "./pages/Listing";
@@ -17,11 +17,13 @@ import AddProperty from "./pages/owner/AddProperty";
 import ListProperty from "./pages/owner/ListProperty";
 
 const App = () => {
+  const location = useLocation();
+  const isOwnerPath = location.pathname.includes('owner');
   const { showAgencyReg } = useAppContext();
 
   return (
     <main>
-      <Header />
+      {!isOwnerPath && <Header />}
       {showAgencyReg && <AgencyReg />}
       <Routes>
         <Route path="/" element={<Home />} />
@@ -38,7 +40,7 @@ const App = () => {
         </Route>
       </Routes>
 
-      <Footer />
+      {!isOwnerPath && <Footer />}
     </main>
   );
 };

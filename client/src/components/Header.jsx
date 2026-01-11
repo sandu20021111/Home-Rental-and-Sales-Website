@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { assets } from "../assets/data";
 import Navbar from "./Navbar";
-import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
+import { useClerk, useUser, UserButton } from "@clerk/clerk-react";
 
+/* Booking Icon */
 const BookingIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -15,7 +16,6 @@ const BookingIcon = () => (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="lucide lucide-scroll-text"
   >
     <path d="M15 12h-5" />
     <path d="M15 8h-5" />
@@ -27,11 +27,12 @@ const BookingIcon = () => (
 const Header = () => {
   const [active, setActive] = useState(false);
   const [menuOpened, setMenuOpened] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useUser();
+
+  /* Clerk hooks */
+  const { user, isLoaded } = useUser();
   const { openSignIn } = useClerk();
 
   const toggleMenu = () => setMenuOpened((prev) => !prev);
@@ -43,7 +44,6 @@ const Header = () => {
       } else {
         setActive(true);
       }
-      if (window.scrollY > 10) setShowSearch(false);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -52,11 +52,14 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [location.pathname]);
 
+  /* Prevent flicker while Clerk loads */
+  if (!isLoaded) return null;
+
   return (
     <header
-      className={`${
+      className={`fixed top-0 w-full z-50 transition-all duration-200 ${
         active ? "bg-white shadow-md py-3" : "py-5"
-      } fixed top-0 w-full z-50 transition-all duration-200`}
+      }`}
     >
       <div className="max-padd-container">
         <div className="flexBetween">
@@ -65,41 +68,48 @@ const Header = () => {
             <img
               src={assets.logoImg}
               alt="Logo"
-              className={`${!active && "invert"} h-11`}
+              className={`${!active ? "invert" : ""} h-11`}
             />
           </Link>
 
           {/* Navbar */}
           <Navbar
             setMenuOpened={setMenuOpened}
-            containerStyle={`${
-              menuOpened
-                ? "flex flex-col gap-y-8 fixed top-16 right-6 p-5 bg-white shadow-md w-52 rounded-xl"
-                : "hidden lg:flex gap-x-4"
-            } ${!menuOpened && !active ? "text-white" : "text-black"}`}
+            containerStyle={`
+              ${
+                menuOpened
+                  ? "flex flex-col gap-y-8 fixed top-16 right-6 p-5 bg-white shadow-md w-52 rounded-xl"
+                  : "hidden lg:flex gap-x-4"
+              }
+              ${!menuOpened && !active ? "text-white" : "text-black"}
+            `}
           />
 
           {/* Right Side */}
           <div className="flex items-center gap-x-4">
-            {/* Menu toggle */}
+            {/* Mobile menu icon */}
             <img
               src={menuOpened ? assets.close : assets.menu}
               alt="menu"
               onClick={toggleMenu}
-              className={`${!active && "invert"} lg:hidden cursor-pointer`}
+              className={`${!active ? "invert" : ""} lg:hidden cursor-pointer`}
             />
 
-            {/* User */}
+            {/* Auth Section */}
             {user ? (
-              <UserButton>
-                <UserButton.MenuItems>
-                  <UserButton.Action
-                    label="My Bookings"
-                    labelIcon={<BookingIcon />}
-                    onClick={() => navigate("/my-bookings")}
-                  />
-                </UserButton.MenuItems>
-              </UserButton>
+              <div className="flex items-center gap-2">
+                {/* My Bookings button */}
+                <button
+                  onClick={() => navigate("/my-bookings")}
+                  className="btn-secondary flexCenter gap-2 rounded-full"
+                >
+                  <BookingIcon />
+                  My Bookings
+                </button>
+
+                {/* User menu */}
+                <UserButton afterSignOutUrl="/" />
+              </div>
             ) : (
               <button
                 onClick={openSignIn}
