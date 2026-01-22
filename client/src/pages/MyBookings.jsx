@@ -23,7 +23,7 @@ const MyBookings = () => {
           key={booking._id}
           className="bg-white ring-1 ring-slate-900/5 p-2 pr-4 mt-3 rounded-lg"
         >
-          {/* Property List */}
+          {/* Property Lists */}
           <div className="flexStart gap-3 mb-3">
             <img
               src={booking?.property?.images?.[0]}
