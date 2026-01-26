@@ -54,6 +54,7 @@ import client4 from "../assets/client4.jpg"
 import about from "../assets/about.png"
 import faq from "../assets/faq.png"
 import createPrp from "../assets/createPrp.png"
+import uploadIcon from "../assets/upload_icon.png"
 // Blogs
 import blog1 from "../assets/blogs/blog1.jpg";
 import blog2 from "../assets/blogs/blog2.jpg";
@@ -112,7 +113,8 @@ export const assets = {
     client3,
     client4,
     about,
-    faq
+    faq,
+    uploadIcon
 }
 
 export const cities = [
