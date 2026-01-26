@@ -233,6 +233,9 @@ const [loading, setLoading] = useState(false);
             </label>
           ))}
         </div>
+        <button type="submit" disabled={loading} className="btn-secondary text-black font-semibold mt-3 p-2 max-w-36 sm:w-full rounded-xl">
+          {loading ? "Submitting..." : "Add property"}
+        </button>
       </form>
 
 
