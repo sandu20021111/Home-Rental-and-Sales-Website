@@ -23,7 +23,9 @@ const clerkWebhooks = async (req, res) => {
           username: data.first_name + " " + data.last_name,
           image: data.image_url,
         };
+
         await User.create(userData);
+
         break;
       }
 
@@ -42,7 +44,6 @@ const clerkWebhooks = async (req, res) => {
         await User.findByIdAndDelete(data.id);
         break;
       }
-
       default:
         break;
     }
@@ -52,4 +53,5 @@ const clerkWebhooks = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
 export default clerkWebhooks;

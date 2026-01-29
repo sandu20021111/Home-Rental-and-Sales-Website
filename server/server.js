@@ -4,6 +4,9 @@ import "dotenv/config";
 import connectDB from "./config/mongodb.js";
 import { clerkMiddleware } from "@clerk/express";
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
+import userRouter from "./routes/userRoute.js";
+import agencyRouter from "./routes/agencyRoute.js";
+import propertyRouter from "./routes/propertyRoute.js";
 
 await connectDB();
 
@@ -15,6 +18,10 @@ app.use(express.json());
 app.use(clerkMiddleware());
 
 app.use("/api/clerk", clerkWebhooks);
+
+app.use("/api/users", userRouter);
+app.use("/api/agencies", agencyRouter);
+app.use("/api/properties", propertyRouter);
 
 //Route Endpoint to check API status
 app.get("/", (req, res) => {
