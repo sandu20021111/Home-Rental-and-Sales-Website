@@ -4,6 +4,14 @@ import Item from "../components/Item";
 
 const Listing = () => {
   const { properties } = useAppContext();
+  const [selectedFilters, setSelectedFilters] = useState({
+    propertyType: [],
+    priceRange: [],
+  })
+
+  const [selectedSort, setSelectedSort] = useState("")
+
+
   const sortOptions = ["Relevant", "Low to High", "High to Low"];
 
   const propertyTypes = [
@@ -23,6 +31,49 @@ const Listing = () => {
     "40000 to 80000",
   ];
 
+
+  //Toggle filter checkboxes
+  const handleFilterChange = (checked, value, type) => {
+    setSelectedFilters(prev => {
+      const updated = { ...prev }
+      if (checked) {
+        updated[type].push(value)
+      } else {
+        updated[type] = updated[type].filter(v => v !== value)
+      }
+      return updated
+    })
+  }
+
+  //sorting function
+  const sortProperties = (a, b) => {
+    if (selectedSort === "Low to High") return a.price.sale - b.price.sale
+    if (selectedSort === "High to Low") return b.price.sale - a.price.sale
+    return 0
+  }
+
+  //price filter
+  const matchesPrice = (property) => {
+    if (selectedFilters.priceRange.length === 0) return true
+    return selectedFilters.priceRange.some(Range => {
+      const [min, max]  = Range.split(" to ").map(Number)
+      return property.price.sale >= min && property.price.sale <= max
+    })
+  }
+
+  //type filters
+  const matchesType = (property) => {
+    if (selectedFilters.propertyType.length === 0) return true
+    return selectedFilters.propertyType.includes(property.propertyType)
+  }
+
+
+  //filtered &sorted properties
+  const filteredProperties = useMemo(() => {
+    return properties.filter(p => matchesType(p) && matchesPrice(p)).sort(sortProperties)
+  }, [properties, selectedFilters, selectedSort])
+
+
   return (
     <div className=" bg-gradient-to-r from -[#fffbee] to-white py-16 pt-28">
       <div className="max-padd-container flex flex-col sm:flex-row gap-8 mb-16">
@@ -31,9 +82,12 @@ const Listing = () => {
           {/* Sort bt price */}
           <div className="py-3 mt-4">
             <h5 className="h5 mb-3">Sort By</h5>
-            <select className="bg-secondary/10 border border-slate-900/10 outline-none text-gray-30 medium-14 h-8 w-full rounded px-2 ">
+            <select value={selectedSort} 
+            onChange={(e) => setSelectedSort(e.target.value)} 
+            className="bg-secondary/10 border border-slate-900/10 outline-none text-gray-30 medium-14 h-8 w-full rounded px-2 ">
+              
               {sortOptions.map((sort, index) => (
-                <option key={index} value="sort">
+                <option key={index} value={sort}>
                   {sort}
                 </option>
               ))}
@@ -44,7 +98,10 @@ const Listing = () => {
             <h5 className="h5 mb-4">Property Type</h5>
             {propertyTypes.map((type) => (
               <label key={type} className="flex gap-2 medium-14">
-                <input type="checkbox" />
+                <input type="checkbox" 
+                checked={selectedFilters.propertyType.includes(type)}
+                onChange={(e) => handleFilterChange(e.target.checked, type, "propertyType")}
+                />
                 {type}
               </label>
             ))}
@@ -54,7 +111,12 @@ const Listing = () => {
             <h5 className="h5 mb-4">Price Range</h5>
             {priceRange.map((price) => (
               <label key={price} className="flex gap-2 medium-14">
-                <input type="checkbox" />
+                <input 
+                type="checkbox"
+                checked={selectedFilters.priceRange.includes(price)}
+                onChange={(e) =>
+                handleFilterChange(e.target.checked, price, "priceRange")}
+                />
                 Rs.{price}
               </label>
             ))}
@@ -62,9 +124,9 @@ const Listing = () => {
         </div>
         {/* right side Filters */}
         <div className="min-h-[97vh] overflow-y-scroll rounded-xl">
-          {properties.length > 0 ? (
+          {filteredProperties.length > 0 ? (
             <div className="grid gap-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-              {properties.map((property) => (
+              {filteredProperties.map((property) => (
                 <Item key={property._id} property={property} />
               ))}
             </div>

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { dummyProperties } from "../assets/data";
-import { Currency } from "lucide-react";
+import { Currency, SearchCodeIcon } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
 
 const AppContext = createContext();
@@ -13,6 +13,7 @@ export const AppContextProvider = ({ children }) => {
   const [properties, setProperties] = useState([]);
   const [showAgencyReg,setshowAgencyReg] = useState(false)
   const [isOwner, setIsOwner] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("")
 
   const getProperties = () => {
     setProperties(dummyProperties);
@@ -31,6 +32,12 @@ export const AppContextProvider = ({ children }) => {
     setshowAgencyReg,
     isOwner,
     setIsOwner,
+
+
+    searchQuery,
+    setSearchQuery,
+    SearchedCities,
+    setSearchedCities,
 };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
