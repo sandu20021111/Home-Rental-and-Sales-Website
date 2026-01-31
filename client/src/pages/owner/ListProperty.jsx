@@ -26,12 +26,12 @@ const ListProperty = () => {
 
   //Taggle availability of the property
   const toggleAvailability = async (propertyId) =>{
-      const {data} = await axios.get("/api/properties/toggle-properties", {propertyId},{
+      const {data} = await axios.post("/api/properties/toggle-availability", {propertyId},{
         headers: {Authorization: `Bearer ${await getToken()}` },
         });
      
         if(data.success){
-          setProperties(data.message)
+          toast.success(data.message)
           getProperties()
         }else{
           toast.error(data.message)
@@ -61,7 +61,8 @@ if(user){
 
       <div>
 {properties.map((property, index)=>(
-  <div key={index}
+  <div 
+  key={index}
   className="flex justify-between items-center flex-wrap gap-2 sm:grid grid-cols-[2fr_2fr_1fr_1fr] lg:grid-cols-[0.5fr_2fr_2fr_1fr_1fr] px-6 py-3 border-b-1 border-slate-900/15">
    <div className="hidden lg:block">{index + 1}</div>
 

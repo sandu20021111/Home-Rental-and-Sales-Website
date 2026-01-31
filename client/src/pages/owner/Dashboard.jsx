@@ -3,7 +3,7 @@ import { useAppContext } from "../../context/AppContext";
 import { assets, dummyDashboardData } from "../../assets/data";
 
 const Dashboard = () => {
-  const { user, currency } = useAppContext();
+  const { user, currency, axios, getToken } = useAppContext();
 
   const [dashboardData, setDashboardData] = useState({
     bookings: [],
@@ -11,8 +11,27 @@ const Dashboard = () => {
     totalRevenue: 0,
   });
 
+  const getDashboardData = async () => {
+    try {
+      const { data } = await axios.get("/api/bookings/agency", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+
+      if (data.success) {
+        setDashboardData(data.dashboardData);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+
   useEffect(() => {
-    setDashboardData(dummyDashboardData);
+    if (user) {
+      getDashboardData();
+    }
   }, [user]);
 
   return (
@@ -82,11 +101,10 @@ const Dashboard = () => {
             </div>
 
             <button
-              className={`w-22 py-0.5 rounded-full text-xs border ${
-                booking.isPaid
+              className={`w-22 py-0.5 rounded-full text-xs border ${booking.isPaid
                   ? "bg-green-400/80 text-white border-green-500/30"
                   : "bg-secondary/10 text-red-500 border-red-500/30"
-              }`}
+                }`}
             >
               {booking.isPaid ? "Completed" : "Pending"}
             </button>
