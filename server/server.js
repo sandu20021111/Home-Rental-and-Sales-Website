@@ -3,6 +3,7 @@ import cors from "cors";
 import "dotenv/config";
 import connectDB from "./config/mongodb.js";
 import { clerkMiddleware } from "@clerk/express";
+
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
 import userRouter from "./routes/userRoute.js";
 import agencyRouter from "./routes/agencyRoute.js";
@@ -13,19 +14,26 @@ await connectDB();
 const app = express();
 app.use(cors());
 
-// Middleware Setup
-app.use(express.json());
-app.use(clerkMiddleware());
+// ✅ IMPORTANT: Clerk Webhook must use RAW body
+app.post(
+  "/api/clerk",
+  express.raw({ type: "application/json" }),
+  clerkWebhooks,
+);
 
-app.use("/api/clerk", clerkWebhooks);
+// ✅ Other routes can use JSON parser
+app.use(express.json());
+
+// Clerk middleware (for protected routes)
+app.use(clerkMiddleware());
 
 app.use("/api/users", userRouter);
 app.use("/api/agencies", agencyRouter);
 app.use("/api/properties", propertyRouter);
 
-//Route Endpoint to check API status
+// Test route
 app.get("/", (req, res) => {
-  res.send("API sucessfully connected");
+  res.send("API successfully connected");
 });
 
 const port = process.env.PORT || 4000;
