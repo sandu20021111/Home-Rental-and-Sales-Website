@@ -7,8 +7,10 @@ import clerkWebhooks from "./controllers/clerkWebhooks.js";
 import userRouter from "./routes/userRoute.js";
 import agencyRouter from "./routes/agencyRoute.js";
 import propertyRouter from "./routes/propertyRoute.js";
+import connectCloudinary from "./config/cloudinary.js";
 
-await connectDB();
+await connectDB()
+await connectCloudinary()
 
 const app = express();
 app.use(cors());
