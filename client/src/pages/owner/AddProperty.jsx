@@ -92,7 +92,7 @@ const onSubmitHandler = async (event) => {
     const {data} = await axios.post("/api/properties", formData, { headers: {Authorization: 'Bearer ${await getToken()}'}});
 
     if(data.success){
-      toast.success(data.message)
+      toast.success(data.message);
       //reset form after succes
       setInputs({
         title: "",
@@ -108,23 +108,29 @@ const onSubmitHandler = async (event) => {
         bathrooms: "",
         garages: "",
         amenities: {
-        Parking: false,
-        Wifi: false,
-        Backyard: false,
-        Terrace: false,
+          Parking: false,
+          Wifi: false,
+          Backyard: false,
+          Terrace: false,
 
-  },
-      })
+    },
+      });
+      setImages({1:null,2:null,3:null,4:null,});
+    }else{
+      toast.error(data.message);
     }
   }catch (error) {
+    toast.error(error.message);
+}finally{
+    setLoading(false);
 }
-}
+};
 
 
 
   return (
-     <div className="">
-      <form className="">
+     <div className="md:px-8 py-6 xl:py-8 m-1.5 sm:m-3 h-[97vh] overflow-y-scroll lg:w-11/12 bg-white shadow rounded-xl">
+      <form onSubmit={onSubmitHandler} className="flex flex-col gap-y-3.5 px-2 text-sm xl:max-w-3xl">
         <div className="w-full">
 
         <h5 className='h5'>Property Name</h5>
@@ -132,8 +138,9 @@ const onSubmitHandler = async (event) => {
         onChange={(e) => setInputs({ ...inputs, title: e.target.value })}
         value={inputs.title}
         type="text"
-        className='px-3 py-2 border border-gray-300 rounded-md w-full'
-        placeholder='Enter property name...'
+        placeholder='Type here...'
+        className="px-3 py-1.5 ring-1 ring-slate-900/10 rounded-lg bg-secondary/5 mt-1 w-full"
+        
         />
 
         </div>
@@ -146,8 +153,8 @@ const onSubmitHandler = async (event) => {
         value={inputs.description}
         rows={5}
         type="text"
-        className='px-3 py-2 border border-gray-300 rounded-md w-full'
-        placeholder='Enter property description...'
+        placeholder='Type here...'
+        className="px-3 py-1.5 ring-1 ring-slate-900/10 rounded-lg bg-secondary/5 mt-1 w-full"
         />
 
         </div>
@@ -159,8 +166,8 @@ const onSubmitHandler = async (event) => {
             onChange={(e) => setInputs({ ...inputs, city: e.target.value })}
             value={inputs.city}
             type="text"
-            className='px-3 py-2 border border-gray-300 rounded-md w-full'
-            placeholder='Enter city...'
+            placeholder='Type here...'
+        className="px-3 py-1.5 ring-1 ring-slate-900/10 rounded-lg bg-secondary/5 mt-1 w-full"
             />
           </div>
           </div>
@@ -172,8 +179,8 @@ const onSubmitHandler = async (event) => {
             onChange={(e) => setInputs({ ...inputs, country: e.target.value })}
             value={inputs.country}
             type="text"
-            className='px-3 py-2 border border-gray-300 rounded-md w-full'
-            placeholder='Enter country...'
+            placeholder='Type here...'
+        className="px-3 py-1.5 ring-1 ring-slate-900/10 rounded-lg bg-secondary/5 mt-1 w-full"
             />
           </div>
           <div>
@@ -203,8 +210,8 @@ const onSubmitHandler = async (event) => {
             onChange={(e) => setInputs({ ...inputs, address: e.target.value })}
             value={inputs.address}
             type="text"
-            className='w-36 px-3 py-1.5 ring-1 ring-slate-900/10 rounded-lg bg-secondary/5 mt-1'
-            placeholder='Enter address...'
+            placeholder='Type here...'
+        className="px-3 py-1.5 ring-1 ring-slate-900/10 rounded-lg bg-secondary/5 mt-1 w-full"
             />
           </div>
           <div className="w-32">
@@ -213,8 +220,8 @@ const onSubmitHandler = async (event) => {
             onChange={(e) => setInputs({ ...inputs, area: e.target.value })}
             value={inputs.area}
             type="number"
-            className='w-36 px-3 py-1.5 ring-1 ring-slate-900/10 rounded-lg bg-secondary/5 mt-1'
-            placeholder='Area in sqft...'
+            placeholder='Type here...'
+        className="px-3 py-1.5 ring-1 ring-slate-900/10 rounded-lg bg-secondary/5 mt-1 w-full"
             />
           </div>
         </div>
@@ -284,12 +291,13 @@ const onSubmitHandler = async (event) => {
             {Object.keys(inputs.amenities).map((amenity, index) => (
               <div key={index} className="flex gap-1 items-center">
                 <input
-                id={`amenities[${index + 1}]`}
+                
                 onChange={(e) => 
                   setInputs({...inputs, amenities: {...inputs.amenities, [amenity]: e.target.checked }})
                 }
-                checked={inputs.amenities[amenity]}
+                id={`amenities[${index + 1}]`}
                 type="checkbox"
+                checked={inputs.amenities[amenity]}
                 />
                 <label htmlFor={`amenities[${index + 1}]`} className="text-sm">{amenity}</label>
               </div>
