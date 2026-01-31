@@ -2,7 +2,9 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { dummyProperties } from "../assets/data";
 import { Currency } from "lucide-react";
+import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
+import { toast } from "react-hot-toast";
 
 const AppContext = createContext();
 
@@ -14,8 +16,17 @@ export const AppContextProvider = ({ children }) => {
   const [showAgencyReg,setshowAgencyReg] = useState(false)
   const [isOwner, setIsOwner] = useState(true);
 
-  const getProperties = () => {
-    setProperties(dummyProperties);
+  const getProperties = async () => {
+    try {
+      const { data } = await axios.get('/api/properties')
+      if(data.success){
+        setProperties(data.properties)
+      }else{
+        toast.error(data.message)
+      }
+    }catch (error) {
+      toast.error(error.message)
+    }
   };
 
   useEffect(() => {
@@ -25,6 +36,7 @@ export const AppContextProvider = ({ children }) => {
   const value = {
     navigate,
     properties,
+    setProperties,
     currency,
     user,
     showAgencyReg,
