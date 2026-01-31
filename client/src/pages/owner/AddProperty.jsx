@@ -90,7 +90,33 @@ const onSubmitHandler = async (event) => {
     })
 
     const {data} = await axios.post("/api/properties", formData, { headers: {Authorization: 'Bearer ${await getToken()}'}});
-}catch (error) {
+
+    if(data.success){
+      toast.success(data.message)
+      //reset form after succes
+      setInputs({
+        title: "",
+        description: "",
+        city: "",
+        country: "",
+        address: "",
+        area: "",
+        propertyType: "",
+        priceRent: "",
+        priceSale: "",
+        bedrooms: "",
+        bathrooms: "",
+        garages: "",
+        amenities: {
+        Parking: false,
+        Wifi: false,
+        Backyard: false,
+        Terrace: false,
+
+  },
+      })
+    }
+  }catch (error) {
 }
 }
 
