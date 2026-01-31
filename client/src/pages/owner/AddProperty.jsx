@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { assets } from "../../assets/data";
+import toast from "react-hot-toast";
+import {useAppContext} from "../../context/AppContext"
 import { UploadIcon } from "lucide-react";
 
 const AddProperty = () => {
+const {axios, getToken} = useAppContext()
 const [images, setImages] = useState({
   1:null,
   2:null,
@@ -33,6 +36,63 @@ const [inputs, setInputs] = useState({
 
 const [loading, setLoading] = useState(false);
 
+const onSubmitHandler = async (event) => {
+  event.preventDefault()
+  //check if all inputs are filled
+  if(  
+  !inputs.title ||
+  !inputs.description ||
+  !inputs.city ||
+  !inputs.country ||
+  !inputs.address ||
+  !inputs.area ||
+  !inputs.propertyType ||
+  (!inputs.priceRent && !inputs.priceSale) ||
+  !inputs.bedrooms ||
+  !inputs.bathrooms 
+ ){
+  toast.error("Please fill all required fields.")
+  return
+ }
+
+  //check if at least 1 image is uploaded
+  const hasImage = Object.values(images).some((img) => img !== null)
+  if(!hasImage){
+    toast.error("Please upload at least one image.")
+    return
+  }
+
+  setLoading (true)
+
+  try {
+    const formData = new FormData()
+    formData.append("title", inputs.title)
+    formData.append("description", inputs.description)
+    formData.append("city", inputs.city)
+    formData.append("country", inputs.country)
+    formData.append("address", inputs.address)
+    formData.append("area", inputs.area)
+    formData.append("propertyType", inputs.propertyType)
+    formData.append("bedrooms", Number(inputs.bedrooms))
+    formData.append("bathrooms", Number(inputs.bathrooms))
+    formData.append("garages", Number(inputs.garages))
+    formData.append("priceRent", inputs.priceRent ? Number(inputs.priceRent): "")
+    formData.append("priceSale", inputs.priceSale ? Number(inputs.priceSale): "")
+
+
+    //converting amenities to array & keeping only enabled amenities
+    const amenities = Object.keys(inputs.amenities).filter((key)=> inputs.amenities[key])
+    formData.append("amenities", JSON.stringify(amenities))
+
+    //Adding images to formdata
+    Object.keys(images).forEach((key)=>{
+      images[key] && formData.append("images", images[key])
+    })
+
+    const {data} = await axios.post("/api/properties", formData, { headers: {Authorization: 'Bearer ${await getToken()}'}});
+}catch (error) {
+}
+}
 
 
 
