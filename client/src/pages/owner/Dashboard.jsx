@@ -42,7 +42,7 @@ const Dashboard = () => {
           <img src={assets.house} alt="house" className="hidden sm:flex w-8" />
           <div>
             <h4 className="h4">
-              {dashboardData.totalBookings.toString().padStart(2, "0")}
+              {dashboardData?.totalBookings?.toString().padStart(2, "0")}
             </h4>
             <h5 className="h5 text-secondary">Total Sales</h5>
           </div>
@@ -57,7 +57,7 @@ const Dashboard = () => {
           <div>
             <h4 className="h4">
               {currency}
-              {dashboardData.totalRevenue}
+              {dashboardData?.totalRevenue || 0}
             </h4>
             <h5 className="h5 text-secondary">Total Earnings</h5>
           </div>
