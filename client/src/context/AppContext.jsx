@@ -36,7 +36,7 @@ export const AppContextProvider = ({ children }) => {
 
   const getUser = async () => {
     try {
-      const { data } = await axios.get("/api/user", {
+      const { data } = await axios.get("/api/users", {
         headers: { Authorization: `Bearer ${await getToken()}` },
       });
       if (data.success) {

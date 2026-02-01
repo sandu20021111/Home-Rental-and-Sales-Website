@@ -5,7 +5,6 @@ import { Link, NavLink, Outlet } from "react-router-dom"; // ❌ Outlet removed
 import { UserButton } from "@clerk/clerk-react";
 
 const Sidebar = () => {
-
   const { navigate, isOwner, user } = useAppContext();
 
   const navItem = [
@@ -24,6 +23,11 @@ const Sidebar = () => {
       label: "List Property",
       icon: assets.list,
     },
+    {
+      path: "/",
+      label: "User View",
+      icon: assets.house,
+    },
   ];
 
   useEffect(() => {
@@ -35,12 +39,9 @@ const Sidebar = () => {
   return (
     <div className="bg-gradient-to-r from-[#fffbee] to-white">
       <div className="mx-auto max-w-[1440px] flex flex-col md:flex-row">
-        
         {/* Sidebar */}
         <div className="max-md:flexCenter flex flex-col justify-between bg-white sm:m-3 md:min-w-[20%] md:min-h-[97vh] rounded-xl shadow">
-          
           <div className="flex flex-col gap-y-6 max-md:items-center md:pt-5">
-
             {/* Logo & profile */}
             <div className="w-full flex justify-between md:flex-col">
               <div className="flex flex-1 p-3 lg:pl-8">
@@ -89,7 +90,6 @@ const Sidebar = () => {
                 </NavLink>
               ))}
             </div>
-
           </div>
 
           {/* Bottom user (desktop) */}
@@ -108,9 +108,8 @@ const Sidebar = () => {
               {user?.firstName} {user?.lastName}
             </div>
           </div>
-
         </div>
-        <Outlet/>
+        <Outlet />
       </div>
     </div>
   );
