@@ -3,15 +3,17 @@ import { Link, useLocation } from "react-router-dom";
 import { assets } from "../assets/data";
 import Navbar from "./Navbar";
 import { useAppContext } from "../context/AppContext";
-import { useClerk,UserButton } from "@clerk/clerk-react";
+import { useClerk, UserButton } from "@clerk/clerk-react";
 
 const Header = () => {
-  const [active, setactive] = useState(false);
+  const [active, setActive] = useState(false);
   const [menuOpened, setMenuOpened] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+
   const location = useLocation();
-  const{navigate,user,isOwner,setshowAgencyReg}=useAppContext();
-  const{openSignIn}= useClerk();
+
+  const { navigate, user, isOwner, setshowAgencyReg } = useAppContext();
+  const { openSignIn } = useClerk();
 
   const toggleMenu = () => {
     setMenuOpened((prev) => !prev);
@@ -20,19 +22,20 @@ const Header = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (location.pathname === "/") {
-        setactive(window.scrollY > 10);
+        setActive(window.scrollY > 10);
       } else {
-        setactive(true);
+        setActive(true);
       }
+
       if (window.scrollY > 10) {
         setShowSearch(false);
       }
     };
+
     window.addEventListener("scroll", handleScroll);
     handleScroll();
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [location.pathname]);
 
   return (
@@ -42,19 +45,19 @@ const Header = () => {
       } fixed top-0 w-full z-50 left-0 right-0 transition-all duration-200`}
     >
       <div className="max-padd-container">
-        {/*container  */}
         <div className="flexBetween">
-          {/* logo  */}
+          {/* Logo */}
           <div className="flex flex-1">
             <Link to={"/"}>
               <img
                 src={assets.logoImg}
                 alt="LogoImg"
-                className={`${!active && "invert"} h-11`}
+                className={`${!active ? "invert" : ""} h-11`}
               />
             </Link>
           </div>
-          {/* nav  */}
+
+          {/* Navbar */}
           <Navbar
             setMenuOpened={setMenuOpened}
             containerStyle={`${
@@ -63,19 +66,28 @@ const Header = () => {
                 : "hidden lg:flex gap-x-s xl:gap-x-1 meduim-15 p-1"
             } ${!menuOpened && !active ? "text-white" : "text-black"}`}
           />
-          {/* Left side (buttons, searchbar & profile) */}
-          <div className="flex sm:flex-1 items-center sm:justify-end gap-x-4 sm:gap-x-8">
-                <div>
-                   {user &&(
-                    <button onClick={()=>isOwner ? navigate('/owner'):setshowAgencyReg(true)}
-                    className={`btn-outline px-2 py-1 text-xs font-semibold ${!active && 'text-primary  ring-primary bg-transparent hover:text-black'} bg-secondary/10 hover:bg-white`}>
-                    
-                       {isOwner ? "Dashboard":"Register Agency"}
-                    </button>
-                   )}
-                </div>
 
-            {/* Search bar  */}
+          {/* Right side */}
+          <div className="flex sm:flex-1 items-center sm:justify-end gap-x-4 sm:gap-x-8">
+            {/* Dashboard / Register Agency */}
+            <div>
+              {user && (
+                <button
+                  onClick={() =>
+                    isOwner ? navigate("/owner") : setshowAgencyReg(true)
+                  }
+                  className={`btn-outline px-2 py-1 text-xs font-semibold ${
+                    !active
+                      ? "text-primary ring-primary bg-transparent hover:text-black"
+                      : ""
+                  } bg-secondary/10 hover:bg-white`}
+                >
+                  {isOwner ? "Dashboard" : "Register Agency"}
+                </button>
+              )}
+            </div>
+
+            {/* Search Bar */}
             <div className="relative hidden xl:flex items-center">
               <div
                 className={`${
@@ -84,56 +96,55 @@ const Header = () => {
                   showSearch
                     ? "w-[266px] opacity-100 px-4 py-2"
                     : "w-11 opacity-0 px-0 py-0"
-                } `}
+                }`}
               >
                 <input
                   type="text"
                   placeholder="Search for location..."
-                  className="w-full text-sm outline-none pr-10 placeholder:text-gray-400"
+                  className="w-full text-sm outline-none pr-10 placeholder:text-gray-400 bg-transparent"
                 />
               </div>
+
               <div
                 className={`${
                   active ? "bg-secondary/10" : "bg-primary"
-                } ring-1  ring-slate-900/10 p-[8px] rounded-full absolute right-0 z-10 cursor-pointer`}
+                } ring-1 ring-slate-900/10 p-[8px] rounded-full absolute right-0 z-10 cursor-pointer`}
                 onClick={() => setShowSearch((prev) => !prev)}
               >
                 <img src={assets.search} alt="searchIcon" />
               </div>
             </div>
-            {/* menu toggle  */}
-            <>
-              {menuOpened ? (
-                <img
-                  src={assets.close}
-                  alt="closeMenuIcon"
-                  onClick={toggleMenu}
-                  className={`${
-                    !active && "invert"
-                  } lg:hidden cursor-pointer text:xl`}
-                />
-              ) : (
-                <img
-                  src={assets.menu}
-                  alt="openMenuIcon"
-                  onClick={toggleMenu}
-                  className={`${
-                    !active && "invert"
-                  } lg:hidden cursor-pointer text-xl`}
-                />
-              )}
-            </>
-            {/*user profile*/}
+
+            {/* Menu Toggle */}
+            {menuOpened ? (
+              <img
+                src={assets.close}
+                alt="closeMenuIcon"
+                onClick={toggleMenu}
+                className={`${!active ? "invert" : ""} lg:hidden cursor-pointer`}
+              />
+            ) : (
+              <img
+                src={assets.menu}
+                alt="openMenuIcon"
+                onClick={toggleMenu}
+                className={`${!active ? "invert" : ""} lg:hidden cursor-pointer`}
+              />
+            )}
+
+            {/* User Profile / Login */}
             <div>
-              {/*user*/}
-              <div>
-                <div>
-                  <button className="btn-secondary flexCenter gap-2 rounded-full">
-                    Login
-                    <img src={assets.user} alt="userIcon" />
-                  </button>
-                </div>
-              </div>
+              {user ? (
+                <UserButton afterSignOutUrl="/" />
+              ) : (
+                <button
+                  onClick={() => openSignIn()}
+                  className="btn-secondary flexCenter gap-2 rounded-full"
+                >
+                  Login
+                  <img src={assets.user} alt="userIcon" />
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -142,4 +153,4 @@ const Header = () => {
   );
 };
 
-export default Header; 
+export default Header;
