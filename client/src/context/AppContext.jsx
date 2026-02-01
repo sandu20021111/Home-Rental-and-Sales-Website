@@ -6,9 +6,6 @@ import { useAuth, useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
-
-axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
-
 const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
@@ -16,13 +13,13 @@ export const AppContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
   const [searchedCities, setSearchedCities] = useState([]);
-  const [showAgencyReg, setshowAgencyReg] = useState(false);
+  const [showAgencyReg, setShowAgencyReg] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   //CLERK
   const { user } = useUser();
   const { getToken } = useAuth();
 
-
+  axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
   const getProperties = async () => {
     try {
@@ -73,7 +70,7 @@ export const AppContextProvider = ({ children }) => {
     currency,
     user,
     showAgencyReg,
-    setshowAgencyReg,
+    setShowAgencyReg,
     isOwner,
     setIsOwner,
     axios,

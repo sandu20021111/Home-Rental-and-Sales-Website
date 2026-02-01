@@ -12,7 +12,7 @@ const Header = () => {
 
   const location = useLocation();
 
-  const { navigate, user, isOwner, setshowAgencyReg } = useAppContext();
+  const { navigate, user, isOwner, setShowAgencyReg } = useAppContext();
   const { openSignIn } = useClerk();
 
   const toggleMenu = () => {
@@ -74,7 +74,7 @@ const Header = () => {
               {user && (
                 <button
                   onClick={() =>
-                    isOwner ? navigate("/owner") : setshowAgencyReg(true)
+                    isOwner ? navigate("/owner") : setShowAgencyReg(true)
                   }
                   className={`btn-outline px-2 py-1 text-xs font-semibold ${
                     !active
