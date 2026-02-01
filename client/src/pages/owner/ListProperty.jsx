@@ -1,21 +1,46 @@
 import React, { useEffect,useState } from 'react';
 import { useAppContext } from "../../context/AppContext";
-import { dummyProperties } from "../../assets/data";
 
 const ListProperty = () => {
 
-  const {user, currency} = useAppContext()
-  const [properties, setProperties] = useState([])
+  const {axios, getToken, user, currency} = useAppContext();
+  const [properties, setProperties] = useState([]);
 
   //get property of the agency owner
 
   const getProperties = async () => {
-    setProperties(dummyProperties)
+    try {
+      const {data} = await axios.get("/api/properties/owner",{
+        headers: {Authorization: `Bearer ${await getToken()}` },
+        });
+     
+        if(data.success){
+          setProperties(data.properties)
+        }else{
+          toast.error(data.message)
+        }
+  } catch (error) { 
+     toast.error(error.message)
+    }
+  };
+
+  //Taggle availability of the property
+  const toggleAvailability = async (propertyId) =>{
+      const {data} = await axios.post("/api/properties/toggle-availability", {propertyId},{
+        headers: {Authorization: `Bearer ${await getToken()}` },
+        });
+     
+        if(data.success){
+          toast.success(data.message)
+          getProperties()
+        }else{
+          toast.error(data.message)
+        }
   }
 
   useEffect(()=>{
 if(user){
-  getProperties()
+  getProperties();
 
 }
   },[user])
@@ -36,7 +61,8 @@ if(user){
 
       <div>
 {properties.map((property, index)=>(
-  <div key={index}
+  <div 
+  key={index}
   className="flex justify-between items-center flex-wrap gap-2 sm:grid grid-cols-[2fr_2fr_1fr_1fr] lg:grid-cols-[0.5fr_2fr_2fr_1fr_1fr] px-6 py-3 border-b-1 border-slate-900/15">
    <div className="hidden lg:block">{index + 1}</div>
 
@@ -60,7 +86,8 @@ if(user){
 
             <div>
               <label className='relative inline-flex items-center cursor-pointer text-gray-900 gap-3'>
-                <input 
+                <input
+                  onChange={()=>toggleAvailability(property._id)} 
                 type="checkbox"
                  className='sr-only peer'
                   defaultChecked={property.isAvailable} 

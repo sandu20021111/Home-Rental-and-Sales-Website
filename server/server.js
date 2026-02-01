@@ -4,6 +4,8 @@ import "dotenv/config";
 import connectDB from "./config/mongodb.js";
 import { clerkMiddleware } from "@clerk/express";
 
+import connectCloudinary from "./config/cloudinary.js";
+
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
 import userRouter from "./routes/userRoute.js";
 import agencyRouter from "./routes/agencyRoute.js";
@@ -11,6 +13,7 @@ import propertyRouter from "./routes/propertyRoute.js";
 import bookingRouter from "./routes/bookingRoute.js";
 
 await connectDB();
+await connectCloudinary();
 
 const app = express();
 app.use(cors());
@@ -40,6 +43,6 @@ app.get("/", (req, res) => {
 
 const port = process.env.PORT || 4000;
 
-app.listen(port, () =>
-  console.log(`Server is running at http://localhost:${port}`),
-);
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});

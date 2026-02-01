@@ -16,12 +16,9 @@ propertyRouter.post(
   authUser,
   createNewProperty,
 );
+propertyRouter.post('/', upload.array('images', 4), authUser, createNewProperty)
 propertyRouter.get("/", getAllAvailableProperties);
 propertyRouter.get("/owner", getOwnerProperties);
-propertyRouter.post(
-  "/toggle-availability",
-  authUser,
-  togglePropertyAvailability,
-);
+propertyRouter.post("/toggle-availability",authUser,togglePropertyAvailability)
 
 export default propertyRouter;
