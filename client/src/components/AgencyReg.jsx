@@ -1,19 +1,41 @@
 import React, { useState } from 'react'
 import { useAppContext } from '../context/AppContext'
 import { assets, cities } from '../assets/data'
+import toast from 'react-hot-toast'
+
 
 const AgencyReg = () => {
-  const { setShowAgencyReg } = useAppContext()
+  const { setShowAgencyReg,axios,getToken,setIsOwner } = useAppContext()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [contact, setContact] = useState("")
   const [address, setAddress] = useState("")
   const [city, setCity] = useState("")
 
+  const onSubmitHandler = async (event)=>{
+    try {
+        event.preventDefault()
+        const{data}=await axios.post('/api/agencies',{name,contact,email,address,city},{headers:{Authorization:`Bearer ${await getToken()}`}})
+    if(data.success){
+          toast.success(data.message)
+          setIsOwner(true)
+          setShowAgencyReg(false)
+       }else{
+         toast.error(data.message)
+       }
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
   return (
 
     <div onClick={()=>setShowAgencyReg(false)} className='fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center justify-center bg-black/80'>
-      <form onClick={(e)=>e.stopPropagation()} className='flexCenter bg-white rounded-xl max-w-4xl max-md:mx-2 relative'>
+
+      <form 
+      onSubmit={onSubmitHandler}
+      onClick={(e)=>e.stopPropagation()} 
+      className='flexCenter bg-white rounded-xl max-w-4xl max-md:mx-2 relative'>
         <img
           src={assets.createPrp}
           alt="createPrp img"

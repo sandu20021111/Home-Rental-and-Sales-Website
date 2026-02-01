@@ -63,6 +63,8 @@ export const AppContextProvider = ({ children }) => {
     setshowAgencyReg,
     isOwner,
     setIsOwner,
+    axios,
+    getToken
 };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

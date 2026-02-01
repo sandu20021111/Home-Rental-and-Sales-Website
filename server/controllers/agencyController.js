@@ -17,8 +17,9 @@ export const agencyReg = async (req, res) => {
       contact,
       city,
       address,
+      owner
     });
-    await User.findByIdAndUpdate(owner, { role: "AgencyOwner" });
+    await User.findByIdAndUpdate(owner, { role: "agencyOwner" });
     res.json({ success: true, message: "Agency registered successfully" });
   } catch (error) {
     res.json({ success: false, message: error.message });
