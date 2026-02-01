@@ -6,6 +6,9 @@ import { useAuth, useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
+
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+
 const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
@@ -19,7 +22,7 @@ export const AppContextProvider = ({ children }) => {
   const { user } = useUser();
   const { getToken } = useAuth();
 
-  axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+
 
   const getProperties = async () => {
     try {
