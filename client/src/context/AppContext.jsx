@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { dummyProperties } from "../assets/data";
 import { Currency } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const AppContext = createContext();
 
