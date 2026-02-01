@@ -19,6 +19,8 @@ export const AppContextProvider = ({ children }) => {
   const { user } = useUser();
   const { getToken } = useAuth();
 
+  axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+
   const getProperties = async () => {
     try {
       const { data } = await axios.get("/api/properties");
