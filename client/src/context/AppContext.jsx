@@ -12,12 +12,14 @@ export const AppContextProvider = ({ children }) => {
   const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "Rs.";
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
+
   const [searchedCities, setSearchedCities] = useState([]);
   const [showAgencyReg, setShowAgencyReg] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   //CLERK
   const { user } = useUser();
   const { getToken } = useAuth();
+  const [searchQuery, setSearchQuery] = useState("");
 
   axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
@@ -75,6 +77,10 @@ export const AppContextProvider = ({ children }) => {
     setIsOwner,
     axios,
     getToken,
+    searchQuery,
+    setSearchQuery,
+    SearchedCities,
+    setSearchedCities,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
