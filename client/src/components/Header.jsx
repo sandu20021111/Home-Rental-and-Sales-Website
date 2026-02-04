@@ -11,20 +11,26 @@ const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
 
   const location = useLocation();
-
-  const { navigate, user, isOwner, setShowAgencyReg, searchQueary, setSearchQueary } = useAppContext();
+  const {
+    navigate,
+    user,
+    isOwner,
+    setShowAgencyReg,
+    searchQuery,
+    setSearchQuery,
+  } = useAppContext();
   const { openSignIn } = useClerk();
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    if (e.target.value && location.pathname !== "/listing") {
+      navigate("/listing");
+    }
+  };
 
   const toggleMenu = () => {
     setMenuOpened((prev) => !prev);
-
-    const handleSearchChange = (e) => {
-      setSearchQueary(e.target.value)
-
-      //redirect to listing page if not already there
-      if (e.target.value && location.pathname !== "/listing") {
-        navigate("/listing")
-  }    };
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,13 +53,10 @@ const Header = () => {
 
   return (
     <header
-      className={`${
-        active ? "bg-white shadow-md py-3" : "py-5"
-      } fixed top-0 w-full z-50 left-0 right-0 transition-all duration-200`}
+      className={`${active ? "bg-white shadow-md py-3" : "py-5"} fixed top-0 w-full z-50 left-0 right-0 transition-all duration-200`}
     >
       <div className="max-padd-container">
         <div className="flexBetween">
-          {/* Logo */}
           <div className="flex flex-1">
             <Link to={"/"}>
               <img
@@ -64,71 +67,44 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Navbar */}
           <Navbar
             setMenuOpened={setMenuOpened}
-            containerStyle={`${
-              menuOpened
-                ? "flex items-start flex-col gap-y-8 fixed top-16 right-6 p-5 bg-white shadow-md w-52 ring-1 ring-slate-900/5 rounded-xl z-50"
-                : "hidden lg:flex gap-x-s xl:gap-x-1 meduim-15 p-1"
-            } ${!menuOpened && !active ? "text-white" : "text-black"}`}
+            containerStyle={`${menuOpened ? "flex items-start flex-col gap-y-8 fixed top-16 right-6 p-5 bg-white shadow-md w-52 ring-1 ring-slate-900/5 rounded-xl z-50" : "hidden lg:flex gap-x-s xl:gap-x-1 meduim-15 p-1"} ${!menuOpened && !active ? "text-white" : "text-black"}`}
           />
 
-          {/* Right side */}
           <div className="flex sm:flex-1 items-center sm:justify-end gap-x-4 sm:gap-x-8">
-            {/* Dashboard / Register Agency */}
-            <div>
-              {user && (
-                <button
-                  onClick={() =>
-                    isOwner ? navigate("/owner") : setShowAgencyReg(true)
-                  }
-                  className={`btn-outline px-2 py-1 text-xs font-semibold ${
-                    !active
-                      ? "text-primary ring-primary bg-transparent hover:text-black"
-                      : ""
-                  } bg-secondary/10 hover:bg-white`}
-                >
-                  {isOwner ? "Dashboard" : "Register Agency"}
-                </button>
-              )}
-            </div>
+            {user && (
+              <button
+                onClick={() =>
+                  isOwner ? navigate("/owner") : setShowAgencyReg(true)
+                }
+                className={`btn-outline px-2 py-1 text-xs font-semibold ${!active ? "text-primary ring-primary bg-transparent hover:text-black" : ""} bg-secondary/10 hover:bg-white`}
+              >
+                {isOwner ? "Dashboard" : "Register Agency"}
+              </button>
+            )}
 
-            {/* Search Bar */}
             <div className="relative hidden xl:flex items-center">
-              {/*search input*/}
               <div
-                className={`${
-                  active ? "bg-secondary/10" : "bg-white"
-                } transition-all duration-300 ease-in-out ring-1 ring-slate-900/10 rounded-full overflow-hidden ${
-                  showSearch
-                    ? "w-[266px] opacity-100 px-4 py-2"
-                    : "w-11 opacity-0 px-0 py-0"
-                }`}
+                className={`${active ? "bg-secondary/10" : "bg-white"} transition-all duration-300 ease-in-out ring-1 ring-slate-900/10 rounded-full overflow-hidden ${showSearch ? "w-[266px] opacity-100 px-4 py-2" : "w-11 opacity-0 px-0 py-0"}`}
               >
                 <input
-
                   onChange={handleSearchChange}
-                  value={searchQueary}
+                  value={searchQuery}
                   type="text"
                   placeholder="Search for location..."
                   className="w-full text-sm outline-none pr-10 placeholder:text-gray-400 bg-transparent"
                 />
               </div>
 
-              {/*Search Toggle Button*/}
-
               <div
-                className={`${
-                  active ? "bg-secondary/10" : "bg-primary"
-                } ring-1 ring-slate-900/10 p-[8px] rounded-full absolute right-0 z-10 cursor-pointer`}
+                className={`${active ? "bg-secondary/10" : "bg-primary"} ring-1 ring-slate-900/10 p-[8px] rounded-full absolute right-0 z-10 cursor-pointer`}
                 onClick={() => setShowSearch((prev) => !prev)}
               >
                 <img src={assets.search} alt="searchIcon" />
               </div>
             </div>
 
-            {/* Menu Toggle */}
             {menuOpened ? (
               <img
                 src={assets.close}
@@ -145,7 +121,6 @@ const Header = () => {
               />
             )}
 
-            {/* User Profile / Login */}
             <div>
               {user ? (
                 <UserButton afterSignOutUrl="/" />
@@ -154,8 +129,7 @@ const Header = () => {
                   onClick={() => openSignIn()}
                   className="btn-secondary flexCenter gap-2 rounded-full"
                 >
-                  Login
-                  <img src={assets.user} alt="userIcon" />
+                  Login <img src={assets.user} alt="userIcon" />
                 </button>
               )}
             </div>
@@ -165,5 +139,5 @@ const Header = () => {
     </header>
   );
 };
-}
+
 export default Header;

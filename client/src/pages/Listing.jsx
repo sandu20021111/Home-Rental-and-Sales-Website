@@ -1,19 +1,21 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { useAppContext } from "../context/AppContext";
 import Item from "../components/Item";
 import { useSearchParams } from "react-router-dom";
 
 const Listing = () => {
-  const { properties, searchQuery} = useAppContext();
+  const { properties, searchQuery } = useAppContext();
   const [selectedFilters, setSelectedFilters] = useState({
     propertyType: [],
     priceRange: [],
   });
 
-  const [selectedSort, setSelectedSort] = useState("")
+  const [selectedSort, setSelectedSort] = useState("");
 
-  const searchParams = useSearchParams()
-  const heroDestination =(searchParams.get("destination") || "").toLowerCase().trim()
+  const [searchParams] = useSearchParams(); // ✅ destructure array
+  const heroDestination = (searchParams.get("destination") || "")
+    .toLowerCase()
+    .trim();
 
   const sortOptions = ["Relevant", "Low to High", "High to Low"];
 
@@ -34,76 +36,85 @@ const Listing = () => {
     "40000 to 80000",
   ];
 
-
-  //Toggle filter checkboxes
+  // Toggle filter checkboxes
   const handleFilterChange = (checked, value, type) => {
-    setSelectedFilters(prev => {
-      const updated = { ...prev }
+    setSelectedFilters((prev) => {
+      const updated = { ...prev };
       if (checked) {
-        updated[type].push(value)
+        updated[type].push(value);
       } else {
-        updated[type] = updated[type].filter(v => v !== value)
+        updated[type] = updated[type].filter((v) => v !== value);
       }
-      return updated
-    })
-  }
+      return updated;
+    });
+  };
 
-  //sorting function
+  // sorting function
   const sortProperties = (a, b) => {
-    if (selectedSort === "Low to High") return a.price.sale - b.price.sale
-    if (selectedSort === "High to Low") return b.price.sale - a.price.sale
-    return 0
-  }
+    if (selectedSort === "Low to High") return a.price.sale - b.price.sale;
+    if (selectedSort === "High to Low") return b.price.sale - a.price.sale;
+    return 0;
+  };
 
-  //price filter
+  // price filter
   const matchesPrice = (property) => {
-    if (selectedFilters.priceRange.length === 0) return true
-    return selectedFilters.priceRange.some(Range => {
-      const [min, max]  = Range.split(" to ").map(Number)
-      return property.price.sale >= min && property.price.sale <= max
-    })
-  }
+    if (selectedFilters.priceRange.length === 0) return true;
+    return selectedFilters.priceRange.some((Range) => {
+      const [min, max] = Range.split(" to ").map(Number);
+      return property.price.sale >= min && property.price.sale <= max;
+    });
+  };
 
-  //type filters
+  // type filters
   const matchesType = (property) => {
-    if (selectedFilters.propertyType.length === 0) return true
-    return selectedFilters.propertyType.includes(property.propertyType)
-  }
+    if (selectedFilters.propertyType.length === 0) return true;
+    return selectedFilters.propertyType.includes(property.propertyType);
+  };
 
-  //search filter using header's searchQuaery
+  // search filter using header's searchQuery
   const matchesSearch = (property) => {
-    if (!searchQuery) return true
+    if (!searchQuery) return true;
     return (
-      property.title.toLowerCase().includes(searchQuery.toLowerCase())||
+      property.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       property.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
       property.country.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  }
+    );
+  };
 
-  //hero destination filter
+  // hero destination filter
   const matchesHeroDestination = (property) => {
-    if (!heroDestination) return true
-    return( property.city ||"").toLowerCase().includes(heroDestination)
-  }
+    if (!heroDestination) return true;
+    return (property.city || "").toLowerCase().includes(heroDestination);
+  };
 
-  //filtered &sorted properties
+  // filtered & sorted properties
   const filteredProperties = useMemo(() => {
-    return properties.filter(p => matchesType(p) && matchesPrice(p) && matchesSearch(p) && matchesHeroDestination(p)).sort(sortProperties)
+    return properties
+      .filter(
+        (p) =>
+          matchesType(p) &&
+          matchesPrice(p) &&
+          matchesSearch(p) &&
+          matchesHeroDestination(p),
+      )
+      .sort(sortProperties);
   }, [properties, selectedFilters, selectedSort, searchQuery, heroDestination]);
 
-
   return (
-    <div className=" bg-gradient-to-r from -[#fffbee] to-white py-16 pt-28">
+    <div className="bg-gradient-to-r from-[#fffbee] to-white py-16 pt-28">
+      {" "}
+      {/* ✅ fixed typo */}
       <div className="max-padd-container flex flex-col sm:flex-row gap-8 mb-16">
         {/* left side Filters */}
         <div className="bg-secondary/10 ring-1 ring-slate-900/5 p-4 sm:min-w-60 sm:h-[600px] rounded-xl">
-          {/* Sort bt price */}
+          {/* Sort by price */}
           <div className="py-3 mt-4">
             <h5 className="h5 mb-3">Sort By</h5>
-            <select value={selectedSort} 
-            onChange={(e) => setSelectedSort(e.target.value)} 
-            className="bg-secondary/10 border border-slate-900/10 outline-none text-gray-30 medium-14 h-8 w-full rounded px-2 ">
-              
+            <select
+              value={selectedSort}
+              onChange={(e) => setSelectedSort(e.target.value)}
+              className="bg-secondary/10 border border-slate-900/10 outline-none text-gray-30 medium-14 h-8 w-full rounded px-2"
+            >
               {sortOptions.map((sort, index) => (
                 <option key={index} value={sort}>
                   {sort}
@@ -111,36 +122,43 @@ const Listing = () => {
               ))}
             </select>
           </div>
-          {/*Property type*/}
+
+          {/* Property type */}
           <div className="py-3 mt-4">
             <h5 className="h5 mb-4">Property Type</h5>
             {propertyTypes.map((type) => (
               <label key={type} className="flex gap-2 medium-14">
-                <input type="checkbox" 
-                checked={selectedFilters.propertyType.includes(type)}
-                onChange={(e) => handleFilterChange(e.target.checked, type, "propertyType")}
+                <input
+                  type="checkbox"
+                  checked={selectedFilters.propertyType.includes(type)}
+                  onChange={(e) =>
+                    handleFilterChange(e.target.checked, type, "propertyType")
+                  }
                 />
                 {type}
               </label>
             ))}
           </div>
-          {/*Price range*/}
+
+          {/* Price range */}
           <div className="py-3 mt-2">
             <h5 className="h5 mb-4">Price Range</h5>
             {priceRange.map((price) => (
               <label key={price} className="flex gap-2 medium-14">
-                <input 
-                type="checkbox"
-                checked={selectedFilters.priceRange.includes(price)}
-                onChange={(e) =>
-                handleFilterChange(e.target.checked, price, "priceRange")}
+                <input
+                  type="checkbox"
+                  checked={selectedFilters.priceRange.includes(price)}
+                  onChange={(e) =>
+                    handleFilterChange(e.target.checked, price, "priceRange")
+                  }
                 />
                 Rs.{price}
               </label>
             ))}
           </div>
         </div>
-        {/* right side Filters */}
+
+        {/* right side Properties */}
         <div className="min-h-[97vh] overflow-y-scroll rounded-xl">
           {filteredProperties.length > 0 ? (
             <div className="grid gap-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
@@ -149,7 +167,7 @@ const Listing = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center text-gray-500 MT-20 ">
+            <div className="text-center text-gray-500 mt-20">
               No matches found.
             </div>
           )}

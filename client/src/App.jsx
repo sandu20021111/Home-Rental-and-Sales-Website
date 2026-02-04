@@ -15,18 +15,21 @@ import Sidebar from "./components/owner/Sidebar";
 import Dashboard from "./pages/owner/Dashboard";
 import AddProperty from "./pages/owner/AddProperty";
 import ListProperty from "./pages/owner/ListProperty";
-import { Toaster } from "react-hot-toast"
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   const location = useLocation();
-  const isOwnerPath = location.pathname.includes('owner');
+
+  // ✅ FIXED
+  const isOwnerPath = location.pathname.startsWith("/owner");
+
   const { showAgencyReg } = useAppContext();
 
   return (
     <main>
       {!isOwnerPath && <Header />}
       {showAgencyReg && <AgencyReg />}
-      <Toaster position="bottom-right"/>
+      <Toaster position="bottom-right" />
 
       <Routes>
         <Route path="/" element={<Home />} />
@@ -36,10 +39,11 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/my-bookings" element={<MyBookings />} />
         <Route path="/featured-properties" element={<FeaturedProperties />} />
+
         <Route path="/owner" element={<Sidebar />}>
           <Route index element={<Dashboard />} />
-          <Route path="/owner/add-property" element={<AddProperty />} />
-          <Route path="/owner/list-property" element={<ListProperty />} />
+          <Route path="add-property" element={<AddProperty />} />
+          <Route path="list-property" element={<ListProperty />} />
         </Route>
       </Routes>
 
