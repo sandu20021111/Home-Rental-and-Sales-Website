@@ -12,12 +12,19 @@ const Header = () => {
 
   const location = useLocation();
 
-  const { navigate, user, isOwner, setShowAgencyReg } = useAppContext();
+  const { navigate, user, isOwner, setShowAgencyReg, searchQueary, setSearchQueary } = useAppContext();
   const { openSignIn } = useClerk();
 
   const toggleMenu = () => {
     setMenuOpened((prev) => !prev);
-  };
+
+    const handleSearchChange = (e) => {
+      setSearchQueary(e.target.value)
+
+      //redirect to listing page if not already there
+      if (e.target.value && location.pathname !== "/listing") {
+        navigate("/listing")
+  }    };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -89,6 +96,7 @@ const Header = () => {
 
             {/* Search Bar */}
             <div className="relative hidden xl:flex items-center">
+              {/*search input*/}
               <div
                 className={`${
                   active ? "bg-secondary/10" : "bg-white"
@@ -99,11 +107,16 @@ const Header = () => {
                 }`}
               >
                 <input
+
+                  onChange={handleSearchChange}
+                  value={searchQueary}
                   type="text"
                   placeholder="Search for location..."
                   className="w-full text-sm outline-none pr-10 placeholder:text-gray-400 bg-transparent"
                 />
               </div>
+
+              {/*Search Toggle Button*/}
 
               <div
                 className={`${
@@ -152,5 +165,5 @@ const Header = () => {
     </header>
   );
 };
-
+}
 export default Header;

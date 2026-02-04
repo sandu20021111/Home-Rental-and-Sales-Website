@@ -1,16 +1,19 @@
 import React from "react";
 import { useAppContext } from "../context/AppContext";
 import Item from "../components/Item";
+import { useSearchParams } from "react-router-dom";
 
 const Listing = () => {
-  const { properties } = useAppContext();
+  const { properties, searchQuery} = useAppContext();
   const [selectedFilters, setSelectedFilters] = useState({
     propertyType: [],
     priceRange: [],
-  })
+  });
 
   const [selectedSort, setSelectedSort] = useState("")
 
+  const searchParams = useSearchParams()
+  const heroDestination =(searchParams.get("destination") || "").toLowerCase().trim()
 
   const sortOptions = ["Relevant", "Low to High", "High to Low"];
 
@@ -67,11 +70,26 @@ const Listing = () => {
     return selectedFilters.propertyType.includes(property.propertyType)
   }
 
+  //search filter using header's searchQuaery
+  const matchesSearch = (property) => {
+    if (!searchQuery) return true
+    return (
+      property.title.toLowerCase().includes(searchQuery.toLowerCase())||
+      property.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      property.country.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }
+
+  //hero destination filter
+  const matchesHeroDestination = (property) => {
+    if (!heroDestination) return true
+    return( property.city ||"").toLowerCase().includes(heroDestination)
+  }
 
   //filtered &sorted properties
   const filteredProperties = useMemo(() => {
-    return properties.filter(p => matchesType(p) && matchesPrice(p)).sort(sortProperties)
-  }, [properties, selectedFilters, selectedSort])
+    return properties.filter(p => matchesType(p) && matchesPrice(p) && matchesSearch(p) && matchesHeroDestination(p)).sort(sortProperties)
+  }, [properties, selectedFilters, selectedSort, searchQuery, heroDestination]);
 
 
   return (

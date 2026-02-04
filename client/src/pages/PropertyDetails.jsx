@@ -4,11 +4,75 @@ import { useParams } from "react-router-dom";
 import PropertyImages from "../components/PropertyImages";
 import { assets } from "../assets/data";
 import { Currency } from "lucide-react";
+import toast from "react-hot-toast";
 
 const PropertyDetails = () => {
-  const { Currency, properties } = useAppContext();
+  const { Currency, properties, navigate, axios, getToken } = useAppContext();
   const [property, setproperty] = useState(null);
   const { id } = useParams();
+  const[checkInDate,setCheckInDate]=useState(null)
+  const[checkOutDate,setCheckOutDate]=useState(null)
+  const[guests,setGuests]=useState(1)
+const[isAvailable,setIsAvailable]=useState(false)
+
+//check Available
+
+const checkAvailability=async(e)=>{
+  try{
+
+    //check is checkInDate and checkOutDate are selected
+    if(!checkInDate || !checkOutDate){
+      toast.error("Please select check-in and check-out dates")
+    
+    }
+const {data}=await axios.post(`/api/bookings/check-availability`,{propertyId:id,checkInDate,checkOutDate,guests});
+if(data.success){
+  if(data.isAvailable){
+    setIsAvailable(true);
+    toast.success("Property is available for the selected dates");
+  }
+  }else{
+    toast.error("Property is not available for the selected dates");}
+
+
+  }catch(error) {
+    toast.error(error.message);
+
+  }
+  };
+
+  //book proprty if available
+const onSubmitHandler=async(e)=>{
+  try{
+    e.preventDefault()
+    if(!isAvailable){
+      return checkAvailability()
+    }else{
+const {data}=await axios.post(`/api/bookings/book`,{
+  
+  property:id,
+  checkInDate,
+  checkOutDate,
+  guests,
+   paymentMethod:"pay at check_in"
+  },{
+    headers:{Authorization:`Bearer ${await getToken()}`},
+  });
+    if(data.success){
+      toast.success(data.message);
+      navigate("/my-bookings")
+      scrollTo(0,0)
+}else{
+        toast.error(data.message)
+      }
+    }
+  }
+    catch(error){
+      toast.error(error.message)
+  }
+}
+
+
 
   useEffect(() => {
     const property = properties.find((property) => property._id == id);
@@ -86,7 +150,7 @@ const PropertyDetails = () => {
                 ))}
               </div>
               {/*checck availability */}
-              <form className="text-gray-500 bg-secondary/10 rounded-lg px-6 py-4 flex flex-col lg:flex-row gap-4 lg:gap-x-8 lg:max-w-full ring-1 max-w-md ring-slate-900/5 relative mt-10">
+              <form onSubmit={onSubmitHandler} className="text-gray-500 bg-secondary/10 rounded-lg px-6 py-4 flex flex-col lg:flex-row gap-4 lg:gap-x-8 lg:max-w-full ring-1 max-w-md ring-slate-900/5 relative mt-10">
                 <div className="flex flex-col w-full">
                   <div className="flex items-center gap-2">
                     <img src={assets.calendar} alt="calendarIcon" width={20} />
@@ -95,6 +159,9 @@ const PropertyDetails = () => {
                     </label>
                   </div>
                   <input
+
+                  onChange={(e)=>setCheckInDate(e.target.value)}
+                  min={new Date().toISOString().split("T")[0]}
                     type="date"
                     id="checkInDate"
                     className="rounded bg-secondary/10 border border-gray-200 px-3 py-1.5 mt-1.5 text-sm outline-none"
@@ -111,8 +178,11 @@ const PropertyDetails = () => {
                     </label>
                   </div>
                   <input
+                  onChange={(e)=>setCheckOutDate(e.target.value)}
+                  min={checkInDate || new Date().toISOString().split("T")[0]}
                     type="date"
                     id="checkOutDate"
+                    disabled={!checkInDate}
                     className="rounded bg-secondary/10 border border-gray-200 px-3 py-1.5 mt-1.5 text-sm outline-none"
                   />
                 </div>
@@ -124,6 +194,9 @@ const PropertyDetails = () => {
                     </label>
                   </div>
                   <input
+
+                  onChange={(e)=>setGuests(e.target.value)}
+                  value={guests}
                     min={1}
                     max={5}
                     type="number"
@@ -142,7 +215,7 @@ const PropertyDetails = () => {
                     width={20}
                     className="invert"
                   />
-                  <span>Search</span>
+                  <span>{isAvailable ? "Book Property" : "Check Dates"}</span>
                 </button>
               </form>
             </div>
